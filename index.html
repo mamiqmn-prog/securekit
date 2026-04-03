@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureKit</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, sans-serif; background:#f0f4ff; min-height:100vh; }
+
+.navbar {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 24px; background:white; box-shadow:0 1px 8px rgba(0,0,0,0.08);
+  position:sticky; top:0; z-index:100;
+}
+.logo span { color:#2563eb; }
+.lang-btn { display:flex; gap:4px; }
+.lang-btn button {
+  padding:6px 14px; border:1px solid #ddd; border-radius:6px;
+  cursor:pointer; background:white; font-size:13px;
+}
+.lang-btn button.active { background:#2563eb; color:white; border-color:#2563eb; }
+
+.hero {
+  text-align:center; padding:60px 20px 40px;
+}
+.hero .badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:white; border:1px solid #e2e8f0; border-radius:20px;
+  padding:6px 16px; font-size:13px; color:#64748b; margin-bottom:20px;
+}
+.hero h1 { font-size:36px; font-weight:800; color:#1e293b; margin-bottom:12px; }
+.hero p { color:#64748b; font-size:16px; }
+
+.tabs {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+  padding:0 20px 30px;
+}
+.tab-btn {
+  padding:10px 20px; border-radius:25px; border:1px solid #e2e8f0;
+  background:white; cursor:pointer; font-size:14px; transition:all 0.2s;
+}
+.tab-btn.active { background:#2563eb; color:white; border-color:#2563eb; }
+
+.container { max-width:600px; margin:0 auto; padding:0 20px 60px; }
+
+.card {
+  background:white; border-radius:16px; padding:24px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06); display:none;
+}
+.card.active { display:block; }
+
+.card-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+.card-icon {
+  width:48px; height:48px; border-radius:12px; background:#eff6ff;
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+}
+.card-header h2 { font-size:18px; font-weight:700; color:#1e293b; }
+.card-header p { font-size:13px; color:#94a3b8; }
+
+input[type=text], input[type=number], select, textarea {
+  width:100%; padding:12px 14px; border:1px solid #e2e8f0; border-radius:10px;
+  font-size:14px; margin-bottom:12px; outline:none; transition:border 0.2s;
+}
+input:focus, select:focus, textarea:focus { border-color:#2563eb; }
+
+.btn {
+  width:100%; padding:12px; background:#2563eb; color:white;
+  border:none; border-radius:10px; font-size:15px; font-weight:600;
+  cursor:pointer; transition:background 0.2s;
+}
+.btn:hover { background:#1d4ed8; }
+
+.strength-bar {
+  height:8px; border-radius:4px; background:#e2e8f0;
+  margin:10px 0; overflow:hidden;
+}
+.strength-fill {
+  height:100%; border-radius:4px; transition:all 0.4s;
+  width:0;
+}
+
+.result-box {
+  padding:12px 16px; border-radius:10px; font-size:14px;
+  margin-top:12px; display:none;
+}
+.result-box.show { display:block; }
+.result-box.success { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+.result-box.warning { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+.result-box.danger  { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+.result-box.info    { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
+
+.copy-row {
+  display:flex; gap:8px; margin-top:8px;
+}
+.copy-row input { margin:0; flex:1; }
+.copy-btn {
+  padding:12px 16px; background:#f1f5f9; border:1px solid #e2e8f0;
+  border-radius:10px; cursor:pointer; font-size:13px; white-space:nowrap;
+}
+.copy-btn:hover { background:#e2e8f0; }
+
+.checkbox-group { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+.checkbox-group label {
+  display:flex; align-items:center; gap:6px; font-size:13px;
+  cursor:pointer; user-select:none;
+}
+
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.info-item {
+  background:#f8fafc; border-radius:10px; padding:14px;
+  border:1px solid #e2e8f0;
+}
+.info-item .label { font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; }
+.info-item .value { font-size:14px; font-weight:600; color:#1e293b; margin-top:4px; word-break:break-all; }
+</style>
+</head>
+<body>
+  <nav class="navbar">
+  <div class="logo">Secure<span>Kit</span></div>
+  <div class="lang-btn">
+    <button class="active" onclick="setLang('tr')">TR</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">🛡️ <span data-tr="Ücretsiz Güvenlik Araçları" data-en="Free Security Tools"></span></div>
+  <h1 data-tr="Güvenliğini Test Et" data-en="Test Your Security"></h1>
+  <p data-tr="Şifre gücü, IP bilgisi, hash üretici ve daha fazlası." data-en="Password strength, IP info, hash generator and more."></p>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('password-test')">🔑 <span data-tr="Şifre Test" data-en="Password Test"></span></button>
+  <button class="tab-btn" onclick="showTab('password-gen')">🎲 <span data-tr="Şifre Üret" data-en="Generate"></span></button>
+  <button class="tab-btn" onclick="showTab('ip-info')">🌐 <span data-tr="IP Bilgisi" data-en="IP Info"></span></button>
+  <button class="tab-btn" onclick="showTab('hash-gen')">🔢 <span data-tr="Hash Üret" data-en="Hash"></span></button>
+</div>
+
+<div class="container">
+
+  <!-- Şifre Test -->
+  <div class="card active" id="password-test">
+    <div class="card-header">
+      <div class="card-icon">🔑</div>
+      <div>
+        <h2 data-tr="Şifre Güç Testi" data-en="Password Strength Test"></h2>
+        <p data-tr="Şifrenizin ne kadar güvenli olduğunu öğrenin" data-en="Find out how secure your password is"></p>
+      </div>
+    </div>
+    <input type="text" id="pw-input" data-tr-placeholder="Şifrenizi girin..." data-en-placeholder="Enter your password..." oninput="testPassword()">
+    <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+    <div id="strength-label" style="font-size:14px;color:#64748b;margin-bottom:8px;"></div>
+    <div class="result-box" id="pw-result"></div>
+  </div>
+
+  <!-- Şifre Üretici -->
+  <div class="card" id="password-gen">
+    <div class="card-header">
+      <div class="card-icon">🎲</div>
+      <div>
+        <h2 data-tr="Şifre Üretici" data-en="Password Generator"></h2>
+        <p data-tr="Güçlü şifre oluşturun" data-en="Create a strong password"></p>
+      </div>
+    </div>
+    <label style="font-size:13px;color:#64748b;" data-tr="Uzunluk:" data-en="Length:"></label>
+    <input type="number" id="pw-length" value="16" min="6" max="64">
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="inc-upper" checked> <span data-tr="Büyük harf" data-en="Uppercase"></span></label>
+      <label><input type="checkbox" id="inc-lower" checked> <span data-tr="Küçük harf" data-en="Lowercase"></span></label>
+      <label><input type="checkbox" id="inc-num" checked> <span data-tr="Rakam" data-en="Numbers"></span></label>
+      <label><input type="checkbox" id="inc-sym" checked> <span data-tr="Sembol" data-en="Symbols"></span></label>
+    </div>
+    <button class="btn" onclick="generatePassword()" data-tr="Şifre Oluştur" data-en="Generate Password"></button>
+    <div class="copy-row" id="gen-result-row" style="display:none;margin-top:12px;">
+      <input type="text" id="gen-output" readonly style="margin:0;">
+      <button class="copy-btn" onclick="copyGen()" data-tr="Kopyala" data-en="Copy"></button>
+    </div>
+  </div>
+
+  <!-- IP Bilgisi -->
+  <div class="card" id="ip-info">
+    <div class="card-header">
+      <div class="card-icon">🌐</div>
+      <div>
+        <h2 data-tr="IP Bilgisi" data-en="IP Information"></h2>
+        <p data-tr="Ağ bilgilerinizi görün" data-en="View your network info"></p>
+      </div>
+    </div>
+    <button class="btn" onclick="getIP()" data-tr="IP Bilgimi Göster" data-en="Show My IP"></button>
+    <div id="ip-grid" style="margin-top:16px;display:none;">
+      <div class="info-grid">
+        <div class="info-item"><div class="label">IP</div><div class="value" id="ip-val">-</div></div>
+        <div class="info-item"><div class="label" data-tr="Şehir" data-en="City"></div><div class="value" id="city-val">-</div></div>
+        <div class="info-item"><div class="label" data-tr="Ülke" data-en="Country"></div><div class="value" id="country-val">-</div></div>
+        <div class="info-item"><div class="label" data-tr="Sağlayıcı" data-en="Provider"></div><div class="value" id="isp-val">-</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hash Üretici -->
+  <div class="card" id="hash-gen">
+    <div class="card-header">
+      <div class="card-icon">#️⃣</div>
+      <div>
+        <h2 data-tr="SHA-256 Hash Üretici" data-en="SHA-256 Hash Generator"></h2>
+        <p data-tr="Metninizin hash değerini alın" data-en="Get the hash of your text"></p>
+      </div>
+    </div>
+    <textarea id="hash-input" rows="3" data-tr-placeholder="Metni buraya girin..." data-en-placeholder="Enter text here..."></textarea>
+    <button class="btn" onclick="generateHash()" data-tr="Hash Oluştur" data-en="Generate Hash"></button>
+    <div class="copy-row" id="hash-result-row" style="display:none;margin-top:12px;">
+      <input type="text" id="hash-output" readonly style="margin:0;font-size:12px;">
+      <button class="copy-btn" onclick="copyHash()" data-tr="Kopyala" data-en="Copy"></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentLang = 'tr';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn button').forEach((b,i) => {
+    b.classList.toggle('active', (i===0&&lang==='tr')||(i===1&&lang==='en'));
+  });
+  document.querySelectorAll('[data-tr]').forEach(el => {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
+    el.textContent = el.getAttribute('data-' + lang);
+  });
+  document.querySelectorAll('[data-tr-placeholder]').forEach(el => {
+    el.placeholder = el.getAttribute('data-' + lang + '-placeholder');
+  });
+}
+
+function showTab(id) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function testPassword() {
+  const pw = document.getElementById('pw-input').value;
+  const fill = document.getElementById('strength-fill');
+  const label = document.getElementById('strength-label');
+  const result = document.getElementById('pw-result');
+
+  if (!pw) {
+    fill.style.width = '0';
+    label.textContent = '';
+    result.className = 'result-box';
+    return;
+  }
+
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (pw.length >= 16) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[a-z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const levels = [
+    { pct:'14%', color:'#ef4444', tr:'Çok Zayıf 😟', en:'Very Weak 😟', cls:'danger' },
+    { pct:'28%', color:'#f97316', tr:'Zayıf 😕',     en:'Weak 😕',      cls:'danger' },
+    { pct:'42%', color:'#eab308', tr:'Orta 😐',       en:'Medium 😐',    cls:'warning' },
+    { pct:'57%', color:'#84cc16', tr:'İyi 🙂',        en:'Good 🙂',      cls:'warning' },
+    { pct:'71%', color:'#22c55e', tr:'Güçlü 💪',      en:'Strong 💪',    cls:'success' },
+    { pct:'85%', color:'#10b981', tr:'Çok Güçlü 🔒',  en:'Very Strong 🔒', cls:'success' },
+    { pct:'100%',color:'#2563eb', tr:'Mükemmel 🛡️',   en:'Perfect 🛡️',  cls:'success' },
+  ];
+  const lvl = levels[Math.min(score, 6)];
+  fill.style.width = lvl.pct;
+  fill.style.background = lvl.color;
+  label.textContent = '🔒 ' + lvl[currentLang];
+
+  const msgs = {
+    success: { tr:'✅ Şifreniz güçlü görünüyor!', en:'✅ Your password looks strong!' },
+    warning: { tr:'⚠️ Şifreniz ortalama güçte.', en:'⚠️ Your password is average strength.' },
+    danger:  { tr:'❌ Şifreniz zayıf, değiştirmenizi öneririz.', en:'❌ Your password is weak, we recommend changing it.' }
+  };
+  result.className = 'result-box show ' + lvl.cls;
+  result.textContent = msgs[lvl.cls][currentLang];
+}
+
+function generatePassword() {
+  const len = parseInt(document.getElementById('pw-length').value) || 16;
+  const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lower = 'abcdefghijklmnopqrstuvwxyz';
+  const nums  = '0123456789';
+  const syms  = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  let chars = '';
+  if (document.getElementById('inc-upper').checked) chars += upper;
+  if (document.getElementById('inc-lower').checked) chars += lower;
+  if (document.getElementById('inc-num').checked)   chars += nums;
+  if (document.getElementById('inc-sym').checked)   chars += syms;
+  if (!chars) chars = lower;
+  let pw = '';
+  for (let i=0; i<len; i++) pw += chars[Math.floor(Math.random()*chars.length)];
+  document.getElementById('gen-output').value = pw;
+  document.getElementById('gen-result-row').style.display = 'flex';
+}
+
+function copyGen() {
+  const val = document.getElementById('gen-output').value;
+  navigator.clipboard.writeText(val);
+  alert(currentLang==='tr' ? 'Kopyalandı!' : 'Copied!');
+}
+
+async function getIP() {
+  try {
+    const r = await fetch('https://ipapi.co/json/');
+    const d = await r.json();
+    document.getElementById('ip-val').textContent = d.ip || '-';
+    document.getElementById('city-val').textContent = d.city || '-';
+    document.getElementById('country-val').textContent = d.country_name || '-';
+    document.getElementById('isp-val').textContent = d.org || '-';
+    document.getElementById('ip-grid').style.display = 'block';
+  } catch(e) {
+    alert(currentLang==='tr' ? 'Bilgi alınamadı.' : 'Could not fetch info.');
+  }
+}
+
+async function generateHash() {
+  const text = document.getElementById('hash-input').value;
+  if (!text) return;
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  document.getElementById('hash-output').value = hex;
+  document.getElementById('hash-result-row').style.display = 'flex';
+}
+
+function copyHash() {
+  navigator.clipboard.writeText(document.getElementById('hash-output').value);
+  alert(currentLang==='tr' ? 'Kopyalandı!' : 'Copied!');
+}
+
+// init
+setLang('tr');
+</script>
+</body>
+                                                                                                 </html>
