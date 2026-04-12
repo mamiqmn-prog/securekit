@@ -3,120 +3,217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecureKit</title>
+<title>SecureKit | Güvenlik Araçları</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: -apple-system, sans-serif; background:#f0f4ff; min-height:100vh; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --cyan: #00e5ff; --green: #00e676; --dark: #0a0f14;
+  --dark2: #111820; --dark3: #161f29; --red: #ff4444;
+  --blue: #2979ff; --warn: #ffaa00; --border: rgba(0,229,255,0.12);
+}
+html, body { font-family: 'Exo 2', sans-serif; background: var(--dark); color: #fff; overflow-x: hidden; min-height: 100vh; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: rgba(0,229,255,0.3); border-radius: 3px; }
 
 .navbar {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:16px 24px; background:white; box-shadow:0 1px 8px rgba(0,0,0,0.08);
-  position:sticky; top:0; z-index:100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 24px; background: rgba(10,15,20,0.95);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px);
 }
-.logo span { color:#2563eb; }
-.lang-btn { display:flex; gap:4px; }
+.logo { font-family: 'Orbitron', monospace; font-size: 1.1rem; font-weight: 900; letter-spacing: 0.05em; }
+.logo span { color: var(--cyan); text-shadow: 0 0 20px rgba(0,229,255,0.6); }
+.lang-btn { display: flex; gap: 6px; }
 .lang-btn button {
-  padding:6px 14px; border:1px solid #ddd; border-radius:6px;
-  cursor:pointer; background:white; font-size:13px;
+  padding: 6px 16px; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
+  cursor: pointer; background: transparent; font-size: 12px; color: rgba(255,255,255,0.5);
+  font-family: 'Exo 2', sans-serif; font-weight: 600; letter-spacing: 0.05em; transition: all 0.2s;
 }
-.lang-btn button.active { background:#2563eb; color:white; border-color:#2563eb; }
+.lang-btn button.active { background: var(--cyan); color: #000; border-color: var(--cyan); }
 
 .hero {
-  text-align:center; padding:60px 20px 40px;
+  position: relative; text-align: center; padding: 60px 20px 30px; overflow: hidden;
 }
-.hero .badge {
-  display:inline-flex; align-items:center; gap:6px;
-  background:white; border:1px solid #e2e8f0; border-radius:20px;
-  padding:6px 16px; font-size:13px; color:#64748b; margin-bottom:20px;
+.hero::before {
+  content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(0,229,255,0.07) 0%, transparent 70%);
+  pointer-events: none;
 }
-.hero h1 { font-size:36px; font-weight:800; color:#1e293b; margin-bottom:12px; }
-.hero p { color:#64748b; font-size:16px; }
+.scanline {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(to bottom, transparent, transparent 3px, rgba(0,229,255,0.008) 3px, rgba(0,229,255,0.008) 4px);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,229,255,0.07); border: 1px solid rgba(0,229,255,0.3);
+  color: var(--cyan); font-size: 0.65rem; letter-spacing: 0.3em;
+  padding: 0.4rem 1.2rem; border-radius: 2px; text-transform: uppercase; margin-bottom: 1.5rem;
+  animation: fadeDown 0.7s ease both;
+}
+.hero h1 {
+  font-family: 'Orbitron', monospace; font-size: clamp(1.8rem, 7vw, 3rem);
+  font-weight: 900; letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #fff 0%, var(--cyan) 60%, var(--green) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  animation: fadeDown 0.8s 0.1s ease both; margin-bottom: 1rem;
+}
+.hero p { color: rgba(255,255,255,0.4); font-size: 0.95rem; animation: fadeUp 0.8s 0.2s ease both; }
+
+.stats {
+  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  padding: 0 1rem 2.5rem; max-width: 600px; margin: 0 auto;
+}
+.stat { flex: 1; min-width: 110px; text-align: center; background: rgba(0,229,255,0.04); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 0.5rem; }
+.stat .n { font-family: 'Orbitron', monospace; font-size: 1.3rem; font-weight: 900; color: var(--cyan); display: block; }
+.stat .l { font-size: 0.62rem; color: rgba(255,255,255,0.35); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.2rem; display: block; }
 
 .tabs {
-  display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
-  padding:0 20px 30px;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  padding: 0 1rem 2rem; max-width: 700px; margin: 0 auto;
 }
 .tab-btn {
-  padding:10px 20px; border-radius:25px; border:1px solid #e2e8f0;
-  background:white; cursor:pointer; font-size:14px; transition:all 0.2s;
+  padding: 10px 20px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.03); cursor: pointer; font-size: 13px;
+  color: rgba(255,255,255,0.5); font-family: 'Exo 2', sans-serif; font-weight: 600;
+  transition: all 0.2s; letter-spacing: 0.03em;
 }
-.tab-btn.active { background:#2563eb; color:white; border-color:#2563eb; }
+.tab-btn:hover { border-color: rgba(0,229,255,0.3); color: var(--cyan); }
+.tab-btn.active { background: rgba(0,229,255,0.1); color: var(--cyan); border-color: rgba(0,229,255,0.5); box-shadow: 0 0 16px rgba(0,229,255,0.15); }
 
-.container { max-width:600px; margin:0 auto; padding:0 20px 60px; }
+.container { max-width: 620px; margin: 0 auto; padding: 0 1rem 5rem; }
 
 .card {
-  background:white; border-radius:16px; padding:24px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.06); display:none;
+  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.8rem; display: none; position: relative; overflow: hidden;
 }
-.card.active { display:block; }
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+.card.active { display: block; animation: fadeUp 0.3s ease both; }
 
-.card-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+.card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 1.6rem; }
 .card-icon {
-  width:48px; height:48px; border-radius:12px; background:#eff6ff;
-  display:flex; align-items:center; justify-content:center; font-size:22px;
+  width: 52px; height: 52px; border-radius: 12px;
+  background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.2);
+  display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;
 }
-.card-header h2 { font-size:18px; font-weight:700; color:#1e293b; }
-.card-header p { font-size:13px; color:#94a3b8; }
+.card-header h2 { font-family: 'Orbitron', monospace; font-size: 0.95rem; font-weight: 700; color: #fff; letter-spacing: 0.04em; margin-bottom: 4px; }
+.card-header p { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
 
-input[type=text], input[type=number], select, textarea {
-  width:100%; padding:12px 14px; border:1px solid #e2e8f0; border-radius:10px;
-  font-size:14px; margin-bottom:12px; outline:none; transition:border 0.2s;
+.divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 1.2rem 0; }
+
+input[type=text], input[type=number], input[type=password], select, textarea {
+  width: 100%; padding: 12px 16px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px; font-size: 14px; margin-bottom: 12px; outline: none;
+  transition: border 0.2s, box-shadow 0.2s; color: #fff; font-family: 'Exo 2', sans-serif;
 }
-input:focus, select:focus, textarea:focus { border-color:#2563eb; }
+input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.25); }
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(0,229,255,0.5); box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+}
 
 .btn {
-  width:100%; padding:12px; background:#2563eb; color:white;
-  border:none; border-radius:10px; font-size:15px; font-weight:600;
-  cursor:pointer; transition:background 0.2s;
+  width: 100%; padding: 13px; background: linear-gradient(135deg, #0099cc, var(--cyan));
+  color: #000; border: none; border-radius: 10px; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; font-family: 'Exo 2', sans-serif; letter-spacing: 0.05em;
 }
-.btn:hover { background:#1d4ed8; }
+.btn:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,229,255,0.3); }
 
-.strength-bar {
-  height:8px; border-radius:4px; background:#e2e8f0;
-  margin:10px 0; overflow:hidden;
-}
-.strength-fill {
-  height:100%; border-radius:4px; transition:all 0.4s;
-  width:0;
-}
+.strength-bar { height: 6px; border-radius: 4px; background: rgba(255,255,255,0.08); margin: 8px 0 6px; overflow: hidden; }
+.strength-fill { height: 100%; border-radius: 4px; transition: all 0.4s; width: 0; }
+.strength-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 10px; }
 
 .result-box {
-  padding:12px 16px; border-radius:10px; font-size:14px;
-  margin-top:12px; display:none;
+  padding: 12px 16px; border-radius: 10px; font-size: 13px;
+  margin-top: 10px; display: none; line-height: 1.7;
 }
-.result-box.show { display:block; }
-.result-box.success { background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
-.result-box.warning { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
-.result-box.danger  { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
-.result-box.info    { background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; }
+.result-box.show { display: block; }
+.result-box.success { background: rgba(0,230,118,0.08); color: rgba(180,255,200,0.9); border: 1px solid rgba(0,230,118,0.25); }
+.result-box.warning { background: rgba(255,170,0,0.08); color: rgba(255,220,150,0.9); border: 1px solid rgba(255,170,0,0.3); }
+.result-box.danger  { background: rgba(255,68,68,0.08); color: rgba(255,180,180,0.9); border: 1px solid rgba(255,68,68,0.3); }
 
-.copy-row {
-  display:flex; gap:8px; margin-top:8px;
+/* ŞİFRE DETAY */
+.pw-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.pw-detail-item {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; padding: 10px 12px;
 }
-.copy-row input { margin:0; flex:1; }
+.pw-detail-item .d-label { font-size: 0.65rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.1em; }
+.pw-detail-item .d-val { font-size: 0.85rem; font-weight: 600; color: #fff; margin-top: 3px; }
+.d-val.ok { color: var(--green); }
+.d-val.bad { color: var(--red); }
+
+.copy-row { display: flex; gap: 8px; margin-top: 10px; }
+.copy-row input { margin: 0; flex: 1; font-family: monospace; font-size: 12px; }
 .copy-btn {
-  padding:12px 16px; background:#f1f5f9; border:1px solid #e2e8f0;
-  border-radius:10px; cursor:pointer; font-size:13px; white-space:nowrap;
+  padding: 12px 16px; background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 10px; cursor: pointer; font-size: 12px; white-space: nowrap; color: var(--cyan);
+  font-family: 'Exo 2', sans-serif; font-weight: 600; transition: all 0.2s;
 }
-.copy-btn:hover { background:#e2e8f0; }
+.copy-btn:hover { background: rgba(0,229,255,0.15); }
 
-.checkbox-group { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
 .checkbox-group label {
-  display:flex; align-items:center; gap:6px; font-size:13px;
-  cursor:pointer; user-select:none;
+  display: flex; align-items: center; gap: 7px; font-size: 13px;
+  cursor: pointer; color: rgba(255,255,255,0.6); user-select: none;
 }
+.checkbox-group input[type=checkbox] { width: auto; margin: 0; accent-color: var(--cyan); }
 
-.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 .info-item {
-  background:#f8fafc; border-radius:10px; padding:14px;
-  border:1px solid #e2e8f0;
+  background: rgba(255,255,255,0.03); border-radius: 10px; padding: 14px;
+  border: 1px solid rgba(255,255,255,0.07);
 }
-.info-item .label { font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; }
-.info-item .value { font-size:14px; font-weight:600; color:#1e293b; margin-top:4px; word-break:break-all; }
+.info-item .label { font-size: 0.65rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.1em; }
+.info-item .value { font-size: 13px; font-weight: 600; color: var(--cyan); margin-top: 5px; word-break: break-all; }
+
+/* ARAÇ AÇIKLAMALARI */
+.tool-info { background: rgba(0,229,255,0.04); border: 1px solid rgba(0,229,255,0.1); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.7; }
+.tool-info strong { color: var(--cyan); }
+
+/* HASH TİPLERİ */
+.hash-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.hash-tab { padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: rgba(255,255,255,0.4); font-size: 12px; cursor: pointer; font-family: 'Exo 2', sans-serif; transition: all 0.2s; }
+.hash-tab.active { background: rgba(0,229,255,0.1); color: var(--cyan); border-color: rgba(0,229,255,0.4); }
+
+/* IP EXTRA */
+.ip-extra { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+.ip-extra-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 10px; }
+.ip-extra-item .label { font-size: 0.6rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em; }
+.ip-extra-item .value { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+
+/* FOOTER */
+.footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; }
+.footer p { font-size: 0.72rem; color: rgba(255,255,255,0.25); line-height: 1.8; }
+.footer a { color: var(--cyan); text-decoration: none; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: rgba(0,229,255,0.15); border: 1px solid rgba(0,229,255,0.4); color: var(--cyan);
+  padding: 10px 24px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  transition: transform 0.3s; z-index: 999; backdrop-filter: blur(8px);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 480px) {
+  .pw-details { grid-template-columns: 1fr; }
+  .info-grid { grid-template-columns: 1fr; }
+  .ip-extra { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
-  <nav class="navbar">
+
+<nav class="navbar">
   <div class="logo">Secure<span>Kit</span></div>
   <div class="lang-btn">
     <button class="active" onclick="setLang('tr')">TR</button>
@@ -125,21 +222,29 @@ input:focus, select:focus, textarea:focus { border-color:#2563eb; }
 </nav>
 
 <div class="hero">
-  <div class="badge">🛡️ <span data-tr="Ücretsiz Güvenlik Araçları" data-en="Free Security Tools"></span></div>
+  <div class="scanline"></div>
+  <div class="hero-badge">🛡️ <span data-tr="Ücretsiz Güvenlik Araçları" data-en="Free Security Tools"></span></div>
   <h1 data-tr="Güvenliğini Test Et" data-en="Test Your Security"></h1>
   <p data-tr="Şifre gücü, IP bilgisi, hash üretici ve daha fazlası." data-en="Password strength, IP info, hash generator and more."></p>
 </div>
 
+<div class="stats">
+  <div class="stat"><span class="n">4</span><span class="l" data-tr="Araç" data-en="Tools"></span></div>
+  <div class="stat"><span class="n">100%</span><span class="l" data-tr="Ücretsiz" data-en="Free"></span></div>
+  <div class="stat"><span class="n">0</span><span class="l" data-tr="Veri Kaydı" data-en="Data Stored"></span></div>
+  <div class="stat"><span class="n">SHA-256</span><span class="l" data-tr="Destekli" data-en="Supported"></span></div>
+</div>
+
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('password-test')">🔑 <span data-tr="Şifre Test" data-en="Password Test"></span></button>
-  <button class="tab-btn" onclick="showTab('password-gen')">🎲 <span data-tr="Şifre Üret" data-en="Generate"></span></button>
-  <button class="tab-btn" onclick="showTab('ip-info')">🌐 <span data-tr="IP Bilgisi" data-en="IP Info"></span></button>
-  <button class="tab-btn" onclick="showTab('hash-gen')">🔢 <span data-tr="Hash Üret" data-en="Hash"></span></button>
+  <button class="tab-btn active" onclick="showTab('password-test', this)">🔑 <span data-tr="Şifre Test" data-en="Password Test"></span></button>
+  <button class="tab-btn" onclick="showTab('password-gen', this)">🎲 <span data-tr="Şifre Üret" data-en="Generate"></span></button>
+  <button class="tab-btn" onclick="showTab('ip-info', this)">🌐 <span data-tr="IP Bilgisi" data-en="IP Info"></span></button>
+  <button class="tab-btn" onclick="showTab('hash-gen', this)">🔢 <span data-tr="Hash Üret" data-en="Hash"></span></button>
 </div>
 
 <div class="container">
 
-  <!-- Şifre Test -->
+  <!-- ŞİFRE TEST -->
   <div class="card active" id="password-test">
     <div class="card-header">
       <div class="card-icon">🔑</div>
@@ -148,77 +253,116 @@ input:focus, select:focus, textarea:focus { border-color:#2563eb; }
         <p data-tr="Şifrenizin ne kadar güvenli olduğunu öğrenin" data-en="Find out how secure your password is"></p>
       </div>
     </div>
-    <input type="text" id="pw-input" data-tr-placeholder="Şifrenizi girin..." data-en-placeholder="Enter your password..." oninput="testPassword()">
+    <div class="tool-info">
+      <strong data-tr="Nasıl çalışır?" data-en="How it works?"></strong><br>
+      <span data-tr="Şifreniz hiçbir sunucuya gönderilmez. Tüm analiz tarayıcınızda gerçek zamanlı yapılır." data-en="Your password is never sent to any server. All analysis is done in real-time in your browser."></span>
+    </div>
+    <input type="password" id="pw-input" data-tr-placeholder="Şifrenizi girin..." data-en-placeholder="Enter your password..." oninput="testPassword()">
     <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
-    <div id="strength-label" style="font-size:14px;color:#64748b;margin-bottom:8px;"></div>
+    <div class="strength-label" id="strength-label"></div>
+    <div class="pw-details" id="pw-details" style="display:none;">
+      <div class="pw-detail-item"><div class="d-label" data-tr="Uzunluk" data-en="Length"></div><div class="d-val" id="d-len">-</div></div>
+      <div class="pw-detail-item"><div class="d-label" data-tr="Büyük Harf" data-en="Uppercase"></div><div class="d-val" id="d-upper">-</div></div>
+      <div class="pw-detail-item"><div class="d-label" data-tr="Rakam" data-en="Numbers"></div><div class="d-val" id="d-num">-</div></div>
+      <div class="pw-detail-item"><div class="d-label" data-tr="Özel Karakter" data-en="Special Char"></div><div class="d-val" id="d-sym">-</div></div>
+    </div>
     <div class="result-box" id="pw-result"></div>
   </div>
 
-  <!-- Şifre Üretici -->
+  <!-- ŞİFRE ÜRETİCİ -->
   <div class="card" id="password-gen">
     <div class="card-header">
       <div class="card-icon">🎲</div>
       <div>
         <h2 data-tr="Şifre Üretici" data-en="Password Generator"></h2>
-        <p data-tr="Güçlü şifre oluşturun" data-en="Create a strong password"></p>
+        <p data-tr="Kriptografik olarak güçlü şifre oluşturun" data-en="Generate cryptographically strong password"></p>
       </div>
     </div>
-    <label style="font-size:13px;color:#64748b;" data-tr="Uzunluk:" data-en="Length:"></label>
-    <input type="number" id="pw-length" value="16" min="6" max="64">
-    <div class="checkbox-group">
-      <label><input type="checkbox" id="inc-upper" checked> <span data-tr="Büyük harf" data-en="Uppercase"></span></label>
-      <label><input type="checkbox" id="inc-lower" checked> <span data-tr="Küçük harf" data-en="Lowercase"></span></label>
-      <label><input type="checkbox" id="inc-num" checked> <span data-tr="Rakam" data-en="Numbers"></span></label>
-      <label><input type="checkbox" id="inc-sym" checked> <span data-tr="Sembol" data-en="Symbols"></span></label>
+    <div class="tool-info">
+      <span data-tr="Şifreler tarayıcınızda üretilir, hiçbir yere kaydedilmez." data-en="Passwords are generated in your browser and never saved anywhere."></span>
     </div>
-    <button class="btn" onclick="generatePassword()" data-tr="Şifre Oluştur" data-en="Generate Password"></button>
+    <label style="font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:0.05em;text-transform:uppercase;" data-tr="Uzunluk:" data-en="Length:"></label>
+    <input type="number" id="pw-length" value="16" min="6" max="128" style="margin-top:6px;">
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="inc-upper" checked> <span data-tr="Büyük harf (A-Z)" data-en="Uppercase (A-Z)"></span></label>
+      <label><input type="checkbox" id="inc-lower" checked> <span data-tr="Küçük harf (a-z)" data-en="Lowercase (a-z)"></span></label>
+      <label><input type="checkbox" id="inc-num" checked> <span data-tr="Rakam (0-9)" data-en="Numbers (0-9)"></span></label>
+      <label><input type="checkbox" id="inc-sym" checked> <span data-tr="Sembol (!@#...)" data-en="Symbols (!@#...)"></span></label>
+    </div>
+    <button class="btn" onclick="generatePassword()"><span data-tr="🎲 Şifre Oluştur" data-en="🎲 Generate Password"></span></button>
     <div class="copy-row" id="gen-result-row" style="display:none;margin-top:12px;">
-      <input type="text" id="gen-output" readonly style="margin:0;">
-      <button class="copy-btn" onclick="copyGen()" data-tr="Kopyala" data-en="Copy"></button>
+      <input type="text" id="gen-output" readonly style="margin:0;font-family:monospace;">
+      <button class="copy-btn" onclick="copyText('gen-output')" data-tr="Kopyala" data-en="Copy"></button>
     </div>
   </div>
 
-  <!-- IP Bilgisi -->
+  <!-- IP BİLGİSİ -->
   <div class="card" id="ip-info">
     <div class="card-header">
       <div class="card-icon">🌐</div>
       <div>
         <h2 data-tr="IP Bilgisi" data-en="IP Information"></h2>
-        <p data-tr="Ağ bilgilerinizi görün" data-en="View your network info"></p>
+        <p data-tr="Ağ ve konum bilgilerinizi görün" data-en="View your network and location info"></p>
       </div>
     </div>
-    <button class="btn" onclick="getIP()" data-tr="IP Bilgimi Göster" data-en="Show My IP"></button>
-    <div id="ip-grid" style="margin-top:16px;display:none;">
+    <div class="tool-info">
+      <strong data-tr="Ne gösterir?" data-en="What does it show?"></strong><br>
+      <span data-tr="IP adresinizi, konumunuzu, internet sağlayıcınızı ve VPN/proxy tespiti yapar." data-en="Shows your IP address, location, ISP and detects VPN/proxy usage."></span>
+    </div>
+    <button class="btn" onclick="getIP()"><span data-tr="🌐 IP Bilgimi Göster" data-en="🌐 Show My IP Info"></span></button>
+    <div id="ip-grid" style="display:none;">
       <div class="info-grid">
         <div class="info-item"><div class="label">IP</div><div class="value" id="ip-val">-</div></div>
         <div class="info-item"><div class="label" data-tr="Şehir" data-en="City"></div><div class="value" id="city-val">-</div></div>
         <div class="info-item"><div class="label" data-tr="Ülke" data-en="Country"></div><div class="value" id="country-val">-</div></div>
         <div class="info-item"><div class="label" data-tr="Sağlayıcı" data-en="Provider"></div><div class="value" id="isp-val">-</div></div>
       </div>
+      <div class="ip-extra">
+        <div class="ip-extra-item"><div class="label" data-tr="Bölge" data-en="Region"></div><div class="value" id="region-val">-</div></div>
+        <div class="ip-extra-item"><div class="label" data-tr="Zaman Dilimi" data-en="Timezone"></div><div class="value" id="tz-val">-</div></div>
+        <div class="ip-extra-item"><div class="label" data-tr="Posta Kodu" data-en="Postal Code"></div><div class="value" id="postal-val">-</div></div>
+        <div class="ip-extra-item"><div class="label" data-tr="Koordinat" data-en="Coordinates"></div><div class="value" id="coord-val">-</div></div>
+      </div>
     </div>
   </div>
 
-  <!-- Hash Üretici -->
+  <!-- HASH ÜRETİCİ -->
   <div class="card" id="hash-gen">
     <div class="card-header">
       <div class="card-icon">#️⃣</div>
       <div>
-        <h2 data-tr="SHA-256 Hash Üretici" data-en="SHA-256 Hash Generator"></h2>
-        <p data-tr="Metninizin hash değerini alın" data-en="Get the hash of your text"></p>
+        <h2 data-tr="Hash Üretici" data-en="Hash Generator"></h2>
+        <p data-tr="SHA-256 hash değeri hesaplayın" data-en="Calculate SHA-256 hash value"></p>
       </div>
     </div>
+    <div class="tool-info">
+      <strong data-tr="Hash nedir?" data-en="What is a hash?"></strong><br>
+      <span data-tr="Hash, bir metnin parmak izidir. Aynı metin her zaman aynı hash üretir. Şifre doğrulama ve veri bütünlüğü için kullanılır." data-en="A hash is a fingerprint of text. The same text always produces the same hash. Used for password verification and data integrity."></span>
+    </div>
+    <div class="hash-tabs">
+      <button class="hash-tab active" onclick="selectHash(this, 'SHA-256')">SHA-256</button>
+      <button class="hash-tab" onclick="selectHash(this, 'SHA-1')">SHA-1</button>
+      <button class="hash-tab" onclick="selectHash(this, 'SHA-512')">SHA-512</button>
+    </div>
     <textarea id="hash-input" rows="3" data-tr-placeholder="Metni buraya girin..." data-en-placeholder="Enter text here..."></textarea>
-    <button class="btn" onclick="generateHash()" data-tr="Hash Oluştur" data-en="Generate Hash"></button>
+    <button class="btn" onclick="generateHash()"><span data-tr="🔢 Hash Oluştur" data-en="🔢 Generate Hash"></span></button>
     <div class="copy-row" id="hash-result-row" style="display:none;margin-top:12px;">
-      <input type="text" id="hash-output" readonly style="margin:0;font-size:12px;">
-      <button class="copy-btn" onclick="copyHash()" data-tr="Kopyala" data-en="Copy"></button>
+      <input type="text" id="hash-output" readonly style="margin:0;font-size:11px;font-family:monospace;">
+      <button class="copy-btn" onclick="copyText('hash-output')" data-tr="Kopyala" data-en="Copy"></button>
     </div>
   </div>
 
 </div>
 
+<div class="footer">
+  <p data-tr="Tüm işlemler tarayıcınızda gerçekleşir. Hiçbir veri kaydedilmez." data-en="All operations happen in your browser. No data is stored."></p>
+</div>
+
+<div class="toast" id="toast">✅ Kopyalandı!</div>
+
 <script>
 let currentLang = 'tr';
+let currentHash = 'SHA-256';
 
 function setLang(lang) {
   currentLang = lang;
@@ -226,19 +370,19 @@ function setLang(lang) {
     b.classList.toggle('active', (i===0&&lang==='tr')||(i===1&&lang==='en'));
   });
   document.querySelectorAll('[data-tr]').forEach(el => {
-    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return;
-    el.textContent = el.getAttribute('data-' + lang);
+    if (el.tagName==='INPUT'||el.tagName==='TEXTAREA') return;
+    el.textContent = el.getAttribute('data-'+lang);
   });
   document.querySelectorAll('[data-tr-placeholder]').forEach(el => {
-    el.placeholder = el.getAttribute('data-' + lang + '-placeholder');
+    el.placeholder = el.getAttribute('data-'+lang+'-placeholder');
   });
 }
 
-function showTab(id) {
+function showTab(id, btn) {
   document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.currentTarget.classList.add('active');
+  btn.classList.add('active');
 }
 
 function testPassword() {
@@ -246,11 +390,13 @@ function testPassword() {
   const fill = document.getElementById('strength-fill');
   const label = document.getElementById('strength-label');
   const result = document.getElementById('pw-result');
+  const details = document.getElementById('pw-details');
 
   if (!pw) {
     fill.style.width = '0';
     label.textContent = '';
     result.className = 'result-box';
+    details.style.display = 'none';
     return;
   }
 
@@ -265,49 +411,63 @@ function testPassword() {
 
   const levels = [
     { pct:'14%', color:'#ef4444', tr:'Çok Zayıf 😟', en:'Very Weak 😟', cls:'danger' },
-    { pct:'28%', color:'#f97316', tr:'Zayıf 😕',     en:'Weak 😕',      cls:'danger' },
-    { pct:'42%', color:'#eab308', tr:'Orta 😐',       en:'Medium 😐',    cls:'warning' },
-    { pct:'57%', color:'#84cc16', tr:'İyi 🙂',        en:'Good 🙂',      cls:'warning' },
-    { pct:'71%', color:'#22c55e', tr:'Güçlü 💪',      en:'Strong 💪',    cls:'success' },
-    { pct:'85%', color:'#10b981', tr:'Çok Güçlü 🔒',  en:'Very Strong 🔒', cls:'success' },
-    { pct:'100%',color:'#2563eb', tr:'Mükemmel 🛡️',   en:'Perfect 🛡️',  cls:'success' },
+    { pct:'28%', color:'#f97316', tr:'Zayıf 😕', en:'Weak 😕', cls:'danger' },
+    { pct:'42%', color:'#eab308', tr:'Orta 😐', en:'Medium 😐', cls:'warning' },
+    { pct:'57%', color:'#84cc16', tr:'İyi 🙂', en:'Good 🙂', cls:'warning' },
+    { pct:'71%', color:'#22c55e', tr:'Güçlü 💪', en:'Strong 💪', cls:'success' },
+    { pct:'85%', color:'#10b981', tr:'Çok Güçlü 🔒', en:'Very Strong 🔒', cls:'success' },
+    { pct:'100%', color:'#00e5ff', tr:'Mükemmel 🛡️', en:'Perfect 🛡️', cls:'success' },
   ];
   const lvl = levels[Math.min(score, 6)];
   fill.style.width = lvl.pct;
   fill.style.background = lvl.color;
-  label.textContent = '🔒 ' + lvl[currentLang];
+  label.textContent = lvl[currentLang];
 
   const msgs = {
     success: { tr:'✅ Şifreniz güçlü görünüyor!', en:'✅ Your password looks strong!' },
-    warning: { tr:'⚠️ Şifreniz ortalama güçte.', en:'⚠️ Your password is average strength.' },
-    danger:  { tr:'❌ Şifreniz zayıf, değiştirmenizi öneririz.', en:'❌ Your password is weak, we recommend changing it.' }
+    warning: { tr:'⚠️ Şifreniz ortalama güçte, geliştirilebilir.', en:'⚠️ Your password is average strength.' },
+    danger: { tr:'❌ Şifreniz zayıf, değiştirmenizi öneririz.', en:'❌ Your password is weak, we recommend changing it.' }
   };
   result.className = 'result-box show ' + lvl.cls;
   result.textContent = msgs[lvl.cls][currentLang];
+
+  // Detaylar
+  details.style.display = 'grid';
+  const lenEl = document.getElementById('d-len');
+  lenEl.textContent = pw.length + (currentLang==='tr' ? ' karakter' : ' chars');
+  lenEl.className = 'd-val ' + (pw.length >= 12 ? 'ok' : 'bad');
+
+  const upperEl = document.getElementById('d-upper');
+  upperEl.textContent = /[A-Z]/.test(pw) ? '✓' : '✗';
+  upperEl.className = 'd-val ' + (/[A-Z]/.test(pw) ? 'ok' : 'bad');
+
+  const numEl = document.getElementById('d-num');
+  numEl.textContent = /[0-9]/.test(pw) ? '✓' : '✗';
+  numEl.className = 'd-val ' + (/[0-9]/.test(pw) ? 'ok' : 'bad');
+
+  const symEl = document.getElementById('d-sym');
+  symEl.textContent = /[^A-Za-z0-9]/.test(pw) ? '✓' : '✗';
+  symEl.className = 'd-val ' + (/[^A-Za-z0-9]/.test(pw) ? 'ok' : 'bad');
 }
 
 function generatePassword() {
   const len = parseInt(document.getElementById('pw-length').value) || 16;
   const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const lower = 'abcdefghijklmnopqrstuvwxyz';
-  const nums  = '0123456789';
-  const syms  = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  const nums = '0123456789';
+  const syms = '!@#$%^&*()_+-=[]{}|;:,.<>?';
   let chars = '';
   if (document.getElementById('inc-upper').checked) chars += upper;
   if (document.getElementById('inc-lower').checked) chars += lower;
-  if (document.getElementById('inc-num').checked)   chars += nums;
-  if (document.getElementById('inc-sym').checked)   chars += syms;
+  if (document.getElementById('inc-num').checked) chars += nums;
+  if (document.getElementById('inc-sym').checked) chars += syms;
   if (!chars) chars = lower;
+  const arr = new Uint32Array(len);
+  crypto.getRandomValues(arr);
   let pw = '';
-  for (let i=0; i<len; i++) pw += chars[Math.floor(Math.random()*chars.length)];
+  for (let i=0; i<len; i++) pw += chars[arr[i] % chars.length];
   document.getElementById('gen-output').value = pw;
   document.getElementById('gen-result-row').style.display = 'flex';
-}
-
-function copyGen() {
-  const val = document.getElementById('gen-output').value;
-  navigator.clipboard.writeText(val);
-  alert(currentLang==='tr' ? 'Kopyalandı!' : 'Copied!');
 }
 
 async function getIP() {
@@ -318,29 +478,47 @@ async function getIP() {
     document.getElementById('city-val').textContent = d.city || '-';
     document.getElementById('country-val').textContent = d.country_name || '-';
     document.getElementById('isp-val').textContent = d.org || '-';
+    document.getElementById('region-val').textContent = d.region || '-';
+    document.getElementById('tz-val').textContent = d.timezone || '-';
+    document.getElementById('postal-val').textContent = d.postal || '-';
+    document.getElementById('coord-val').textContent = d.latitude && d.longitude ? d.latitude.toFixed(2) + ', ' + d.longitude.toFixed(2) : '-';
     document.getElementById('ip-grid').style.display = 'block';
   } catch(e) {
     alert(currentLang==='tr' ? 'Bilgi alınamadı.' : 'Could not fetch info.');
   }
 }
 
+function selectHash(btn, type) {
+  currentHash = type;
+  document.querySelectorAll('.hash-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('hash-result-row').style.display = 'none';
+}
+
 async function generateHash() {
   const text = document.getElementById('hash-input').value;
   if (!text) return;
   const enc = new TextEncoder().encode(text);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const algMap = { 'SHA-256': 'SHA-256', 'SHA-1': 'SHA-1', 'SHA-512': 'SHA-512' };
+  const buf = await crypto.subtle.digest(algMap[currentHash], enc);
+  const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
   document.getElementById('hash-output').value = hex;
   document.getElementById('hash-result-row').style.display = 'flex';
 }
 
-function copyHash() {
-  navigator.clipboard.writeText(document.getElementById('hash-output').value);
-  alert(currentLang==='tr' ? 'Kopyalandı!' : 'Copied!');
+function copyText(id) {
+  const val = document.getElementById(id).value;
+  navigator.clipboard.writeText(val).then(() => showToast());
 }
 
-// init
+function showToast() {
+  const t = document.getElementById('toast');
+  t.textContent = currentLang === 'tr' ? '✅ Kopyalandı!' : '✅ Copied!';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
 setLang('tr');
 </script>
 </body>
-                                                                                                 </html>
+</html>
